@@ -15,6 +15,18 @@ const form = document.querySelector('.form');
 let current_page = 1;
 let searchValue;
 
+export function scrollByImg() {
+  const galleryItem = document.querySelector('.gallery');
+  let sizeGallery = galleryItem.getBoundingClientRect();
+  if (sizeGallery.height > 0) {
+    let heightGallery = sizeGallery.height * 2;
+    window.scrollBy({
+      top: heightGallery,
+      behavior: 'smooth',
+    });
+  }
+}
+
 form.addEventListener('submit', event => {
   event.preventDefault();
   gallery.innerHTML = null;
@@ -24,7 +36,7 @@ form.addEventListener('submit', event => {
   if (searchValue === '') {
     return;
   } else {
-    getRequest(searchValue);
+    getRequest(searchValue, current_page);
   }
   form.reset();
 });
@@ -33,24 +45,6 @@ nextPage.addEventListener('click', event => {
   loading.classList.add('loader');
   boxLoad.appendChild(loading);
   current_page++;
+  console.log(current_page);
   getRequest(searchValue, current_page);
 });
-
-export function hideNextButton(totalHits) {
-  console.log(totalHits);
-  console.log(current_page);
-  let a = current_page * 200;
-  console.log(a);
-  if (a > totalHits) {
-    nextPage.classList.remove('show-button');
-    return iziToast.show({
-      message: "We're sorry, but you've reached the end of search results.",
-      color: 'blue',
-      messageColor: 'black',
-      timeout: 1000,
-      imageWidth: 50,
-      position: 'bottomRight',
-      maxWidth: 420,
-    });
-  }
-}

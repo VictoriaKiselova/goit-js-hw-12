@@ -5,16 +5,17 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { loading } from '../main.js';
 import { nextPage } from '../main.js';
+import { scrollByImg } from '../main.js';
 
 export const gallery = document.querySelector('.list-gallery');
+let count = 0;
 
-export function showImages(data) {
-
+export function showImages(data, totalHits) {
   if (data.hits.length === 0) {
     gallery.innerHTML = null;
     loading.classList.remove('loader');
     nextPage.classList.remove('show-button');
-   
+
     return iziToast.show({
       message:
         'Sorry, there are no images matching your search query. Please try again!',
@@ -26,9 +27,8 @@ export function showImages(data) {
       position: 'topRight',
       maxWidth: 420,
     });
-  } 
-  if (data.hits) {  
-    
+  }
+  if (data.hits) {
     loading.classList.remove('loader');
     nextPage.classList.add('show-button');
     const markup = data.hits
@@ -42,6 +42,21 @@ export function showImages(data) {
       })
       .join('');
     gallery.insertAdjacentHTML('beforeend', markup);
+    count += data.hits.length;
+    scrollByImg();
+  }
+
+  if (count >= totalHits) {
+    nextPage.classList.remove('show-button');
+    return iziToast.show({
+      message: "We're sorry, but you've reached the end of search results.",
+      color: 'blue',
+      messageColor: 'black',
+      timeout: 1000,
+      imageWidth: 50,
+      position: 'bottomRight',
+      maxWidth: 420,
+    });
   }
   const lightbox = new SimpleLightbox('.gallery a', {
     captionDelay: 250,
