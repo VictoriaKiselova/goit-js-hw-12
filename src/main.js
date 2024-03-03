@@ -12,8 +12,8 @@ export const nextPage = document.querySelector('.loading-more-img');
 const boxLoad = document.querySelector('.btn-load-box');
 const form = document.querySelector('.form');
 
-let current_page = 1;
-let searchValue;
+let current_page;
+let currentSearchQuery;
 
 export function scrollByImg() {
   const galleryItem = document.querySelector('.gallery');
@@ -29,9 +29,12 @@ export function scrollByImg() {
 
 form.addEventListener('submit', event => {
   event.preventDefault();
+  console.log(event);
   gallery.innerHTML = null;
+  current_page = 1;
   loading.classList.add('loader');
-  searchValue = event.target.elements.search.value.trim();
+  let searchValue = event.target.elements.search.value.trim();
+  currentSearchQuery = searchValue;
 
   if (searchValue === '') {
     return;
@@ -45,6 +48,5 @@ nextPage.addEventListener('click', event => {
   loading.classList.add('loader');
   boxLoad.appendChild(loading);
   current_page++;
-  console.log(current_page);
-  getRequest(searchValue, current_page);
+  getRequest(currentSearchQuery, current_page);
 });
